@@ -25,6 +25,11 @@ wholeSE <- popAddTrend(wholeSE, name='30 Day Weighted Mean', type='weightedMeanL
 
 plot(wholeSE, main="Test", xlim=as.Date(c('2017-07-31', today)))
 
+# Latest estimates, aggegating all polls
+tail(wholeSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(wholeSE$trends$`Kalman 0.003 - Raw`, n=8)
+tail(wholeSE$trends$`30 Day Weighted Mean`, n=8)
+
 # Add trends to trimmed polls
 trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Interpolated', type='kalman', args=list(sd = 0.003))
 trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Raw', type='kalman', args=list(sd = 0.003), 
@@ -33,6 +38,11 @@ trimmedSE <- popAddTrend(trimmedSE, name='30 Day Weighted Mean', type='weightedM
                             args=list(days = 30, maxObs = Inf))
 
 plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)))
+
+# Latest estimates, aggegating all non-web-only polls
+tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(trimmedSE$trends$`Kalman 0.003 - Raw`, n=8)
+tail(trimmedSE$trends$`30 Day Weighted Mean`, n=8)
 
 
 # Examine individual web-based polls for 12 months preceeding 2014 election
