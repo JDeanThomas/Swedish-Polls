@@ -97,3 +97,26 @@ plot(webOnlySE, xlim=as.Date(c('2013-09-14', '2014-09-14')))
 # Compare to aggregate of non-web based polls for 12 months preceeding 2014 election
 plot(trimmedSE, xlim=as.Date(c('2013-09-14', '2014-09-14')))
 
+
+# Remove Demoskap polls from the trimmed aggregate to explore effect.
+# Demoskop is a hybrid phone-web poll and has wild variation / large SD
+trimmedSE$polls <- trimmedSE$polls[trimmedSE$polls$firm != 'Demoskop']
+
+trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Interpolated', type='kalman', args=list(sd = 0.003))
+trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Raw', type='kalman', args=list(sd = 0.003), 
+                         interpolations=list(lastInterpolation = list()))
+trimmedSE <- popAddTrend(trimmedSE, name='30 Day Weighted Mean', type='weightedMeanLastDays', 
+                         args=list(days = 30, maxObs = Inf))
+
+plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)))
+
+# Latest estimates, aggegating all non-web-only polls
+tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(trimmedSE$trends$`Kalman 0.003 - Raw`, n=8)
+tail(trimmedSE$trends$`30 Day Weighted Mean`, n=8)
+
+### Removing Demoskop flatens the trend even furhter, and causes
+### further convergence of 3 averaging methods.
+
+### Something is going on with polling in Sweden, and will need a post-mortem
+
