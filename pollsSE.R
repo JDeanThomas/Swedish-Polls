@@ -1,4 +1,5 @@
 library(pollofpolls)
+source("packageFix.R")
 
 today <- as.character(Sys.Date())
 
