@@ -26,7 +26,7 @@ wholeSE <- popAddTrend(wholeSE, name='30 Day Weighted Mean', type='weightedMeanL
 
 plot(wholeSE, main="Test", xlim=as.Date(c('2017-07-31', today)))
 
-# Latest estimates, aggegating all polls
+# Latest estimates, aggregating all polls
 tail(wholeSE$trends$`Kalman 0.003 - Interpolated`, n=8)
 tail(wholeSE$trends$`Kalman 0.003 - Raw`, n=8)
 tail(wholeSE$trends$`30 Day Weighted Mean`, n=8)
@@ -40,7 +40,7 @@ trimmedSE <- popAddTrend(trimmedSE, name='30 Day Weighted Mean', type='weightedM
 
 plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)))
 
-# Latest estimates, aggegating all non-web-only polls
+# Latest estimates, aggregating all non-web-only polls
 tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
 tail(trimmedSE$trends$`Kalman 0.003 - Raw`, n=8)
 tail(trimmedSE$trends$`30 Day Weighted Mean`, n=8)
