@@ -24,7 +24,7 @@ wholeSE <- popAddTrend(wholeSE, name='Kalman 0.003 - Raw', type='kalman', args=l
 wholeSE <- popAddTrend(wholeSE, name='30 Day Weighted Mean', type='weightedMeanLastDays', 
                        args=list(days = 30, maxObs = Inf))
 
-plot(wholeSE, main="Test", xlim=as.Date(c('2017-07-31', today)))
+plot(wholeSE, main="Test", xlim=as.Date(c('2017-07-31', today)), label="SE - All Polls")
 
 # Latest estimates, aggregating all polls
 tail(wholeSE$trends$`Kalman 0.003 - Interpolated`, n=8)
@@ -38,7 +38,7 @@ trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Raw', type='kalman', ar
 trimmedSE <- popAddTrend(trimmedSE, name='30 Day Weighted Mean', type='weightedMeanLastDays', 
                             args=list(days = 30, maxObs = Inf))
 
-plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)))
+plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)), label="SE - Random selected only")
 
 # Latest estimates, aggregating all non-web-only polls
 tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
@@ -99,25 +99,39 @@ plot(webOnlySE, xlim=as.Date(c('2013-09-14', '2014-09-14')))
 plot(trimmedSE, xlim=as.Date(c('2013-09-14', '2014-09-14')))
 
 
-# Remove Demoskap polls from the trimmed aggregate to explore effect.
+# Remove SKOP polls from the trimmed aggregate to explore effect.
 # Demoskop is a hybrid phone-web poll and has wild variation / large SD
-trimmedSE$polls <- trimmedSE$polls[trimmedSE$polls$firm != 'Demoskop']
+noSkopSE <- trimmedSE
 
-trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Interpolated', type='kalman', args=list(sd = 0.003))
-trimmedSE <- popAddTrend(trimmedSE, name='Kalman 0.003 - Raw', type='kalman', args=list(sd = 0.003), 
-                         interpolations=list(lastInterpolation = list()))
-trimmedSE <- popAddTrend(trimmedSE, name='30 Day Weighted Mean', type='weightedMeanLastDays', 
-                         args=list(days = 30, maxObs = Inf))
+noSkopSE$polls <- trimmedSE$polls[trimmedSE$polls$firm != 'SKOP']
 
-plot(trimmedSE, xlim=as.Date(c('2017-07-31', today)))
+noSkopSE <- popAddTrend(noSkopSE, name='Kalman 0.003 - Interpolated', type='kalman', args=list(sd = 0.003))
+noSkopSE <- popAddTrend(noSkopSE, name='Kalman 0.003 - Raw', type='kalman', args=list(sd = 0.003), 
+                        interpolations=list(lastInterpolation = list()))
+noSkopSE <- popAddTrend(noSkopSE, name='30 Day Weighted Mean', type='weightedMeanLastDays', 
+                        args=list(days = 30, maxObs = Inf))
+
+plot(noSkopSE, xlim=as.Date(c('2017-07-31', today)), label="SE - w/o SKOP")
 
 # Latest estimates, aggregating only polls with no web respondents at all
-tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
-tail(trimmedSE$trends$`Kalman 0.003 - Raw`, n=8)
-tail(trimmedSE$trends$`30 Day Weighted Mean`, n=8)
+tail(noSkopSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(noSkopSE$trends$`Kalman 0.003 - Raw`, n=8)
+tail(noSkopSE$trends$`30 Day Weighted Mean`, n=8)
 
-### Removing Demoskop flatens the trend even furhter, and causes
+### Removing SKOP flatens the trend even furhter, and causes
 ### further convergence of 3 averaging methods.
 
 ### Something is going on with polling in Sweden, and will need a post-mortem
+
+# Interpolated Kalman for all polls and only polls with ranomized selction
+# and lastly with the SKOP polls removed.
+tail(wholeSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(trimmedSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+tail(noSkopSE$trends$`Kalman 0.003 - Interpolated`, n=8)
+
+
+# Post election glance.
+# Indeed, the non-reandom selection web polls (YouGov and Sentio) and SKOP
+# all were off by more than their margin of error, especially for SD.
+
 
